@@ -1,12 +1,14 @@
 "use client";
 
 // Adapted from Osmo's parallax-scrolling component (osmo.supply): same layered
-// GSAP ScrollTrigger timeline, rebuilt for this site — original space artwork instead of
-// hotlinked photos, scoped cleanup, and no animation when the visitor prefers reduced motion.
+// GSAP ScrollTrigger timeline, rebuilt for this site: a canvas starfield (twinkling + shooting
+// stars, in the style of voxlet-ui's Space Box) behind a planet-horizon foreground, scoped
+// cleanup, and no animation when the visitor prefers reduced motion.
 
 import { useEffect, useRef, type ReactNode } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Starfield } from "@/components/scene/starfield";
 
 type Layer = { depth: "far" | "mid" | "content" | "near"; yPercent: number };
 
@@ -40,14 +42,10 @@ export function ParallaxHero({ children, label }: { children: ReactNode; label: 
   return (
     <section ref={root} className="parallax" aria-label={label}>
       <div className="parallax__layer parallax__layer--far" data-parallax-layer="far" aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/space/layer-far.webp" alt="" fetchPriority="high" />
+        <Starfield className="parallax__stars" density={1.4} minSize={0.35} maxSize={1.2} shooting />
       </div>
       <div className="parallax__layer parallax__layer--mid" data-parallax-layer="mid" aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/space/layer-mid.webp" alt="" />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/space/moon.webp" alt="" className="parallax__moon" />
+        <Starfield className="parallax__stars" density={0.12} minSize={1} maxSize={2.1} />
       </div>
       <div className="parallax__content" data-parallax-layer="content">
         {children}

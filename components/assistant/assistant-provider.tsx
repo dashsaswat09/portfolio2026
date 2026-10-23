@@ -5,6 +5,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { curatedAnswers } from "@/content/assistant";
 import type { LinkItem } from "@/content/types";
 import { setProbeMood } from "../scene/probe-state";
+import { pickIndianVoice, speak, stopSpeaking, voiceSupported } from "./voice";
 
 type Msg = { role: "user" | "guide"; text: string; links?: LinkItem[]; note?: string };
 
@@ -26,6 +27,44 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
   const field = useRef<HTMLInputElement>(null);
   const opener = useRef<Element | null>(null);
   const log = useRef<HTMLDivElement>(null);
+  const [voiceOn, setVoiceOn] = useState(false);
+  const [voiceName, setVoiceName] = useState<string | null | undefined>(undefined); // undefined = still checking
+  const voiceRef = useRef(false);
+
+  useEffect(() => {
+    if (!voiceSupported()) return setVoiceName(null);
+    pickIndianVoice().then((v) => setVoiceName(v ? v.name : null));
+    try {
+      if (localStorage.getItem("guide-voice") === "on") {
+        voiceRef.current = true;
+        setVoiceOn(true);
+      }
+    } catch {}
+  }, []);
+
+  /** Animate the probe while an answer is "spoken" — aloud if voice is on. */
+  const respond = useCallback(async (text: string) => {
+    if (voiceRef.current) {
+      const ok = await speak(text, { start: () => setProbeMood("speaking"), end: () => setProbeMood("idle") });
+      if (ok) return;
+    }
+    setProbeMood("speaking");
+    setTimeout(() => setProbeMood("idle"), 1400);
+  }, []);
+
+  const toggleVoice = useCallback(() => {
+    const next = !voiceRef.current;
+    voiceRef.current = next;
+    setVoiceOn(next);
+    try {
+      localStorage.setItem("guide-voice", next ? "on" : "off");
+    } catch {}
+    if (next) respond("Namaste! I'm Saswat's portfolio guide. Ask me anything about his work.");
+    else {
+      stopSpeaking();
+      setProbeMood("idle");
+    }
+  }, [respond]);
 
   const ask = useCallback(async (opts: { curatedId?: string; question?: string }) => {
     const curated = opts.curatedId ? curatedAnswers.find((c) => c.id === opts.curatedId) : undefined;
@@ -35,9 +74,8 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     setMsgs((m) => [...m, { role: "user", text: q }]);
 
     if (curated) {
-      setProbeMood("speaking");
       setMsgs((m) => [...m, { role: "guide", text: curated.answer, links: curated.links }]);
-      setTimeout(() => setProbeMood("idle"), 1400);
+      respond(curated.answer);
       return;
     }
 
@@ -60,15 +98,14 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           note: data.source === "fallback" ? "Fallback answer" : data.supported === false ? "Not covered on this site" : undefined,
         },
       ]);
-      setProbeMood("speaking");
-      setTimeout(() => setProbeMood("idle"), 1400);
+      respond(data.answer);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Couldn't reach the assistant. Check your connection and try again.");
       setProbeMood("idle");
     } finally {
       setBusy(false);
     }
-  }, []);
+  }, [respond]);
 
   const open = useCallback(
     (curatedId?: string) => {
@@ -81,6 +118,8 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
   const close = useCallback(() => {
     setOpen(false);
+    stopSpeaking();
+    setProbeMood("idle");
     (opener.current as HTMLElement | null)?.focus?.();
   }, []);
 
@@ -131,9 +170,23 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       >
         <div className="ask__head">
           <h2 id="ask-title">Ask about Saswat's work</h2>
-          <button className="ask__close" onClick={close} tabIndex={isOpen ? 0 : -1}>
-            Close
-          </button>
+          <div className="ask__tools">
+            {voiceName !== null && (
+              <button
+                className={`ask__voice ${voiceOn ? "is-on" : ""}`}
+                onClick={toggleVoice}
+                aria-pressed={voiceOn}
+                disabled={voiceName === undefined}
+                tabIndex={isOpen ? 0 : -1}
+                title={voiceName ? `Indian English voice: ${voiceName}` : "Checking for an Indian English voice"}
+              >
+                <span aria-hidden="true">{voiceOn ? "🔊" : "🔈"}</span> Voice {voiceOn ? "on" : "off"}
+              </button>
+            )}
+            <button className="ask__close" onClick={close} tabIndex={isOpen ? 0 : -1}>
+              Close
+            </button>
+          </div>
         </div>
         <div className="ask__log" ref={log} aria-live="polite">
           {msgs.map((m, i) => (
@@ -208,6 +261,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         )}
         <p className="ask__privacy">
           Typed questions are sent to Google Gemini to write an answer. This site stores nothing.
+          {voiceName === null && " Voice replies need an Indian English voice, which this device doesn't have."}
         </p>
       </div>
     </Ctx.Provider>
