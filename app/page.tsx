@@ -1,171 +1,127 @@
 import Link from "next/link";
-import { profile, caseStudies, experience, recognition, moreWork, education } from "../content";
-
-function Sheet({ children }: { children: React.ReactNode }) {
-  return (
-    <section className="sheet" aria-label="Introduction">
-      <svg className="sheet-frame" aria-hidden="true">
-        <rect className="outer" x="0" y="0" width="100%" height="100%" />
-      </svg>
-      <div className="inner-frame" aria-hidden="true" />
-      <span className="zone" style={{ top: 14, left: "25%" }} aria-hidden="true">1</span>
-      <span className="zone" style={{ top: 14, left: "50%" }} aria-hidden="true">2</span>
-      <span className="zone" style={{ top: 14, left: "75%" }} aria-hidden="true">3</span>
-      <span className="zone" style={{ left: 14, top: "33%" }} aria-hidden="true">A</span>
-      <span className="zone" style={{ left: 14, top: "66%" }} aria-hidden="true">B</span>
-      <div className="sheet-content">{children}</div>
-    </section>
-  );
-}
+import { profile, caseStudies, experience } from "@/content";
+import { ParallaxHero } from "@/components/ui/parallax-scrolling";
+import { ProbeStage } from "@/components/scene/probe-stage";
+import { Gate, Planet, OwnershipTag } from "@/components/content-bits";
+import { AskButton, AskChips } from "@/components/home-ask";
 
 export default function Home() {
+  const headlineMetrics = caseStudies.flatMap((c) => c.metrics.slice(0, 1).map((m) => ({ ...m, company: c.company, slug: c.slug })));
+
   return (
     <>
-      <div className="wrap">
-        <header className="topbar">
-          <Link href="/" className="mark">Saswat Dash</Link>
-          <nav aria-label="Sections">
-            <a href="#work">Work</a>
-            <a href="#experience">Experience</a>
-            <a href="#writing">Writing</a>
-            <a href="#contact">Contact</a>
-          </nav>
-        </header>
-
-        <Sheet>
-          <div className="hero-grid">
-            <div>
-              <h1 className="hero-name">{profile.name}</h1>
-              <p className="hero-headline">{profile.headline}</p>
-              <p className="hero-looking">{profile.looking}</p>
-              <div className="hero-actions">
-                <a className="btn btn-primary" href="#work">See my work</a>
-                <a className="btn" href={`mailto:${profile.email}`}>Email me</a>
-              </div>
+      <ParallaxHero label="Introduction">
+        <div className="wrap hero">
+          <div className="hero__text">
+            <p className="eyebrow">Product Manager · APM</p>
+            <h1 className="hero__name">{profile.name}</h1>
+            <p className="hero__headline">{profile.headline}</p>
+            <p className="hero__intro">{profile.intro}</p>
+            <div className="hero__actions">
+              <Link className="btn btn--primary" href="/work">
+                See case studies
+              </Link>
+              <AskButton className="btn">Ask my AI guide</AskButton>
             </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className="portrait" src="/saswat.jpg" alt="Saswat Dash" width={608} height={640} />
+            <p className="hero__links">
+              <a href={profile.resume.href} target="_blank" rel="noopener">Resume</a>
+              <a href={profile.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+              <a href={`mailto:${profile.email}`}>{profile.email}</a>
+            </p>
           </div>
-          <dl className="title-block" aria-label="At a glance">
-            {profile.titleBlock.map((row) => (
-              <div key={row.k} style={{ display: "contents" }}>
-                <dt>{row.k}</dt>
-                <dd className={row.k === "Revision" ? "rev" : undefined}>{row.v}</dd>
-              </div>
-            ))}
-          </dl>
-        </Sheet>
+          <div className="hero__probe">
+            <ProbeStage />
+          </div>
+        </div>
+      </ParallaxHero>
 
-        <section className="section" id="work">
-          <div className="section-head">
-            <h2>Selected work</h2>
-            <p className="section-note">Four projects, each with the problem, what I did and what changed.</p>
-          </div>
-          <ul className="work-list">
-            {caseStudies.map((c) => (
-              <li className="work-item" key={c.slug}>
-                <Link className="work-link" href={`/work/${c.slug}`}>
-                  <div className="work-meta">
-                    <strong>{c.company}</strong>
-                    {c.kind}
-                  </div>
-                  <div>
-                    <h3 className="work-title">{c.title}</h3>
-                    <p className="work-result"><span>{c.result}</span></p>
-                  </div>
+      <section className="section wrap" aria-labelledby="impact">
+        <h2 id="impact" className="sr-only">Impact at a glance</h2>
+        <ul className="impact">
+          {headlineMetrics.map((m) => (
+            <li key={m.slug}>
+              <Gate status={m.status}>
+                <Link href={`/work/${m.slug}`} className="impact__item">
+                  <span className="impact__value">{m.value}</span>
+                  <span className="impact__label">{m.label}</span>
+                  <span className="impact__org">{m.company}</span>
                 </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="section" id="experience">
-          <div className="section-head">
-            <h2>Experience</h2>
-          </div>
-          <div className="ledger">
-            {experience.map((e) => (
-              <div className="ledger-row" key={e.org}>
-                <div className="ledger-org">
-                  {e.slug ? <Link href={`/work/${e.slug}`}>{e.org}</Link> : e.org}
-                </div>
-                <div>
-                  <p className="ledger-role">{e.role}</p>
-                  <p className="ledger-line">{e.line}</p>
-                </div>
-                <div className="ledger-period">{e.period}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="section">
-          <div className="section-head">
-            <h2>Recognition</h2>
-          </div>
-          <ul className="plain-list">
-            {recognition.map((r) => (
-              <li key={r.name}>
-                <span className="name">{r.name}</span>
-                <span className="detail">{r.detail}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="section">
-          <div className="section-head">
-            <h2>More work</h2>
-          </div>
-          <ul className="plain-list">
-            {moreWork.map((m) => (
-              <li key={m.name}>
-                <span className="name">{m.name}</span>
-                <span className="detail">{m.detail}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="section" id="writing">
-          <div className="section-head">
-            <h2>Writing</h2>
-          </div>
-          <ul className="plain-list">
-            <li>
-              <span className="name">{profile.channel.name}</span>
-              <span className="detail">
-                {profile.channel.line}{" "}
-                <a href={profile.channel.instagram}>Instagram</a> and{" "}
-                <a href={profile.channel.youtube}>YouTube</a>, {profile.channel.handle}.
-              </span>
+              </Gate>
             </li>
-            <li>
-              <span className="name">Education</span>
-              <span className="detail">
-                {education.school}, {education.year}. {education.degree}.
-              </span>
-            </li>
-          </ul>
-        </section>
+          ))}
+        </ul>
+      </section>
 
-        <section className="section" id="contact">
-          <div className="section-head">
-            <h2>Contact</h2>
-            <div>
-              <p className="contact-line">
-                <a href={`mailto:${profile.email}`}>{profile.email}</a>
-              </p>
-              <div className="links">
-                {profile.linkedin && <a href={profile.linkedin}>LinkedIn</a>}
-                <a href={profile.github}>GitHub</a>
-                <a href={profile.channel.instagram}>{profile.channel.handle}</a>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-      <footer className="wrap footer">© {new Date().getFullYear()} Saswat Dash</footer>
+      <section className="section wrap" aria-labelledby="work-title">
+        <div className="section__head">
+          <p className="eyebrow">Selected work</p>
+          <h2 id="work-title">Four missions, one way of working</h2>
+          <p className="section__lede">Each case study covers the problem, what I decided and why, and what changed.</p>
+        </div>
+        <ol className="orbit">
+          {caseStudies.map((c, i) => (
+            <li key={c.slug} className="mission">
+              <Link href={`/work/${c.slug}`} className="mission__link">
+                <Planet planet={c.planet} size={84} className="mission__planet" />
+                <span className="mission__index">Mission {String(i + 1).padStart(2, "0")}</span>
+                <span className="mission__company">{c.company}</span>
+                <span className="mission__title">{c.title}</span>
+                <span className="mission__line">{c.oneLiner}</span>
+                <span className="mission__meta">
+                  <OwnershipTag value={c.ownership} /> {c.domain}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="section wrap split" aria-labelledby="exp-title">
+        <div className="section__head">
+          <p className="eyebrow">Experience</p>
+          <h2 id="exp-title">Where I've worked</h2>
+          <Link href="/experience" className="textlink">
+            Full timeline →
+          </Link>
+        </div>
+        <ul className="timeline timeline--compact">
+          {experience.slice(0, 6).map((e) => (
+            <li key={e.org}>
+              <span className="timeline__period">{e.period}</span>
+              <span className="timeline__org">{e.org}</span>
+              <span className="timeline__role">{e.role}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="section wrap ask-band" aria-labelledby="ask-title-home">
+        <div>
+          <p className="eyebrow">AI guide</p>
+          <h2 id="ask-title-home">Short on time? Ask a question.</h2>
+          <p className="section__lede">
+            It answers only from what's on this site, and says so when it doesn't know. How it was built is itself a{" "}
+            <Link href="/work/portfolio-assistant">case study</Link>.
+          </p>
+        </div>
+        <AskChips ids={["who", "best-work", "data", "contact"]} />
+      </section>
+
+      <section className="section wrap cta" aria-labelledby="cta-title">
+        <h2 id="cta-title">Hiring for a product role?</h2>
+        <p className="section__lede">{profile.looking}</p>
+        <div className="hero__actions">
+          <a className="btn btn--primary" href={`mailto:${profile.email}`}>
+            Email me
+          </a>
+          <a className="btn" href={profile.linkedin} target="_blank" rel="noopener">
+            LinkedIn
+          </a>
+          <a className="btn" href={profile.resume.href} target="_blank" rel="noopener">
+            Resume
+          </a>
+        </div>
+      </section>
     </>
   );
 }
