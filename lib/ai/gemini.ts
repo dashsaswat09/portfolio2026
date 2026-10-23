@@ -3,7 +3,7 @@ import { answerSchema, systemPrompt } from "./prompt";
 // Minimal Gemini REST client. No SDK, so no extra dependency.
 // Model and limits come from environment variables (see .env.example).
 
-export type ModelAnswer = { answer: string; supported: boolean; links: string[] };
+export type ModelAnswer = { answer: string; supported: boolean; links: string[]; action: "none" | "schedule" };
 
 export class ProviderError extends Error {
   constructor(message: string, readonly kind: "config" | "timeout" | "upstream" | "parse") {
@@ -53,7 +53,12 @@ export async function askGemini(question: string): Promise<ModelAnswer> {
   try {
     const parsed = JSON.parse(text) as Partial<ModelAnswer>;
     if (typeof parsed.answer !== "string" || typeof parsed.supported !== "boolean") throw new Error("shape");
-    return { answer: parsed.answer, supported: parsed.supported, links: Array.isArray(parsed.links) ? parsed.links.map(String) : [] };
+    return {
+      answer: parsed.answer,
+      supported: parsed.supported,
+      links: Array.isArray(parsed.links) ? parsed.links.map(String) : [],
+      action: parsed.action === "schedule" ? "schedule" : "none",
+    };
   } catch {
     throw new ProviderError("Could not parse model output", "parse");
   }

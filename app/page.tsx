@@ -104,14 +104,17 @@ export default function Home() {
             <Link href="/work/portfolio-assistant">case study</Link>.
           </p>
         </div>
-        <AskChips ids={["who", "best-work", "data", "contact"]} />
+        <AskChips ids={["who", "best-work", "data", "schedule"]} />
       </section>
 
       <section className="section wrap cta" aria-labelledby="cta-title">
         <h2 id="cta-title">Hiring for a product role?</h2>
         <p className="section__lede">{profile.looking}</p>
         <div className="hero__actions">
-          <a className="btn btn--primary" href={`mailto:${profile.email}`}>
+          <AskButton className="btn btn--primary" start="schedule">
+            Book a call
+          </AskButton>
+          <a className="btn" href={`mailto:${profile.email}`}>
             Email me
           </a>
           <a className="btn" href={profile.linkedin} target="_blank" rel="noopener">

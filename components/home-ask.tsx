@@ -3,10 +3,10 @@
 import { curatedAnswers } from "@/content/assistant";
 import { useAssistant } from "./assistant/assistant-provider";
 
-export function AskButton({ className, children }: { className?: string; children: React.ReactNode }) {
+export function AskButton({ className, children, start }: { className?: string; children: React.ReactNode; start?: string }) {
   const { open } = useAssistant();
   return (
-    <button className={className} onClick={() => open()}>
+    <button className={className} onClick={() => open(start)}>
       {children}
     </button>
   );

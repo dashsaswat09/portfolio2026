@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { profile } from "@/content";
+import { AskButton } from "@/components/home-ask";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -20,6 +21,11 @@ export default function ContactPage() {
         <p className="eyebrow">Contact</p>
         <h1>Let's talk</h1>
         <p className="section__lede">{profile.looking}</p>
+        <div className="hero__actions">
+          <AskButton className="btn btn--primary" start="schedule">
+            Book an interview or intro call
+          </AskButton>
+        </div>
       </header>
       <ul className="contact">
         {rows.map((r) => (

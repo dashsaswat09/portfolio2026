@@ -48,6 +48,10 @@ Workflow: replace the text, set `status: "verified"`, run `npm run check:content
 - Limits (per instance): 6/min and 30/day per visitor, 300/day total. Gemini's own free-tier quota is the real ceiling.
 - Free tier: Google may use free-tier inputs to improve its products. The panel tells visitors this.
 
+## Setting up Gemini and interview booking
+
+Step-by-step: see [SETUP.md](SETUP.md).
+
 ## Deploy (Vercel project `portfolio2026`)
 
 1. Vercel → Settings → Environment Variables: add `GEMINI_API_KEY` (and optionally `GEMINI_MODEL`).

@@ -18,6 +18,9 @@ Email: ${profile.email}
 LinkedIn: ${profile.linkedin}
 Content channel: ${profile.channel.name} (${profile.channel.handle}) — ${profile.channel.line}`);
 
+  out.push(`# Scheduling
+Visitors can book an interview or an intro chat with Saswat inside this guide; his calendar is checked live. He is based in India (IST).`);
+
   out.push(`# About`);
   for (const s of about.sections.filter((s) => ok(s.status))) out.push(`## ${s.heading}\n${s.body.join("\n")}`);
 

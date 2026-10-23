@@ -6,7 +6,7 @@ import type { LinkItem } from "./types";
 // Curated answers: shown instantly in the browser, no model call.
 // They are built from the content files so they can't drift from the site.
 
-export type CuratedAnswer = { id: string; question: string; answer: string; links: LinkItem[] };
+export type CuratedAnswer = { id: string; question: string; answer: string; links: LinkItem[]; action?: "schedule" };
 
 const featured = caseStudies.filter((c) => c.summary.status !== "placeholder");
 
@@ -45,6 +45,20 @@ export const curatedAnswers: CuratedAnswer[] = [
     question: "How does his engineering background help him as a PM?",
     answer: `He trained as a mechanical engineer at ${profile.education.school}, and his work leans analytical — SQL and funnel analysis, experiment design, and modelling. He can speak with engineers about trade-offs. For his own words on why he moved into product, see the About page.`,
     links: [{ label: "About", href: "/about" }],
+  },
+  {
+    id: "schedule",
+    question: "Can I schedule an interview with him?",
+    answer: `Yes. Pick an interview or a short intro chat and choose a time — his calendar is checked live and the invite comes from Cal.com with a meeting link. He's based in India (${"IST"}).`,
+    links: [],
+    action: "schedule",
+  },
+  {
+    id: "availability",
+    question: "When is he available to talk?",
+    answer: "Here are his open times for the next two weeks, shown in your time zone. Pick one to book it.",
+    links: [],
+    action: "schedule",
   },
   {
     id: "resume",

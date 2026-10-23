@@ -12,6 +12,7 @@ export type AskResponse = {
   links: { label: string; href: string }[];
   supported: boolean;
   source: "curated" | "model" | "fallback";
+  action?: "none" | "schedule";
 };
 
 const fallback = (answer: string): AskResponse => ({
@@ -61,7 +62,7 @@ export async function POST(req: Request) {
       .map((href) => allowedLinks.find((l) => l.href === href))
       .filter((l): l is { label: string; href: string } => Boolean(l))
       .slice(0, 3);
-    return NextResponse.json<AskResponse>({ answer: out.answer, links, supported: out.supported, source: "model" });
+    return NextResponse.json<AskResponse>({ answer: out.answer, links, supported: out.supported, source: "model", action: out.action });
   } catch (err) {
     const kind = err instanceof ProviderError ? err.kind : "upstream";
     if (kind === "config") console.warn("[ask] GEMINI_API_KEY missing — returning fallback");

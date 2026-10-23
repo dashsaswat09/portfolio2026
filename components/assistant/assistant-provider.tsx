@@ -6,8 +6,26 @@ import { curatedAnswers } from "@/content/assistant";
 import type { LinkItem } from "@/content/types";
 import { setProbeMood } from "../scene/probe-state";
 import { pickIndianVoice, speak, stopSpeaking, voiceSupported } from "./voice";
+import { Scheduler } from "./scheduler";
 
-type Msg = { role: "user" | "guide"; text: string; links?: LinkItem[]; note?: string };
+type Msg = { role: "user" | "guide"; text: string; links?: LinkItem[]; note?: string; scheduler?: boolean };
+
+// Requests to meet, talk or check availability open the scheduler directly, without a model call.
+const SCHEDULE_INTENT = new RegExp(
+  [
+    "\\b(schedule|book|arrange|set up|setup|fix|plan)\\b.{0,30}\\b(interview|call|meeting|chat|time|slot|meet)",
+    "\\binterview (him|saswat)\\b",
+    "\\b(talk|speak|chat|meet|connect) (to|with) (him|saswat)\\b",
+    "\\b(is|when is|when's) (he|saswat) (free|available)\\b",
+    "\\b(his|saswat'?s) (availability|calendar|schedule)\\b",
+    "\\bavailable (to|for) (talk|chat|a call|an interview|interview|meet)",
+    "\\b(free|available) (slots?|times?)\\b",
+  ].join("|"),
+  "i",
+);
+
+const SCHEDULE_INTRO =
+  "Happy to set that up. Pick the kind of call, then a time that works — times are shown in your time zone, and Saswat's calendar is checked live.";
 
 const Ctx = createContext<{ open: (curatedId?: string) => void }>({ open: () => {} });
 export const useAssistant = () => useContext(Ctx);
@@ -74,8 +92,14 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     setMsgs((m) => [...m, { role: "user", text: q }]);
 
     if (curated) {
-      setMsgs((m) => [...m, { role: "guide", text: curated.answer, links: curated.links }]);
+      setMsgs((m) => [...m, { role: "guide", text: curated.answer, links: curated.links }, ...(curated.action === "schedule" ? [{ role: "guide" as const, text: "", scheduler: true }] : [])]);
       respond(curated.answer);
+      return;
+    }
+
+    if (SCHEDULE_INTENT.test(q)) {
+      setMsgs((m) => [...m, { role: "guide", text: SCHEDULE_INTRO }, { role: "guide", text: "", scheduler: true }]);
+      respond(SCHEDULE_INTRO);
       return;
     }
 
@@ -97,6 +121,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           links: data.links,
           note: data.source === "fallback" ? "Fallback answer" : data.supported === false ? "Not covered on this site" : undefined,
         },
+        ...(data.action === "schedule" ? [{ role: "guide" as const, text: "", scheduler: true }] : []),
       ]);
       respond(data.answer);
     } catch (e) {
@@ -129,7 +154,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
       if (e.key === "Tab" && panel.current) {
-        const f = panel.current.querySelectorAll<HTMLElement>("a, button, input");
+        const f = panel.current.querySelectorAll<HTMLElement>("a, button:not(:disabled), input:not([aria-hidden]), textarea");
         const first = f[0];
         const last = f[f.length - 1];
         if (e.shiftKey && document.activeElement === first) {
@@ -150,6 +175,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
   }, [msgs, busy]);
 
   const asked = new Set(msgs.filter((m) => m.role === "user").map((m) => m.text));
+  const scheduling = msgs[msgs.length - 1]?.scheduler === true; // hide chips while booking
 
   return (
     <Ctx.Provider value={{ open }}>
@@ -189,7 +215,17 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           </div>
         </div>
         <div className="ask__log" ref={log} aria-live="polite">
-          {msgs.map((m, i) => (
+          {msgs.map((m, i) =>
+            m.scheduler ? (
+              <Scheduler
+                key={i}
+                tabIndex={isOpen ? 0 : -1}
+                onBooked={(summary) => {
+                  setMsgs((x) => [...x, { role: "guide", text: summary }]);
+                  respond(summary);
+                }}
+              />
+            ) : (
             <div key={i} className={`msg msg--${m.role}`}>
               {m.note && <span className="msg__note">{m.note}</span>}
               <p>{m.text}</p>
@@ -209,7 +245,8 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                 </div>
               )}
             </div>
-          ))}
+            ),
+          )}
           {busy && (
             <div className="msg msg--guide msg--thinking" aria-label="Thinking">
               <span />
@@ -218,7 +255,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             </div>
           )}
         </div>
-        <div className="ask__chips">
+        <div className="ask__chips" hidden={scheduling}>
           {curatedAnswers
             .filter((c) => !asked.has(c.question))
             .slice(0, 4)
@@ -260,7 +297,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           </p>
         )}
         <p className="ask__privacy">
-          Typed questions are sent to Google Gemini to write an answer. This site stores nothing.
+          Typed questions are sent to Google Gemini to write an answer. Bookings go to Cal.com, which emails the invite. This site stores nothing.
           {voiceName === null && " Voice replies need an Indian English voice, which this device doesn't have."}
         </p>
       </div>
