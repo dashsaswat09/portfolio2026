@@ -1,44 +1,60 @@
-# Saswat Dash — portfolio
+# Saswat Dash — The Product Universe
 
-A Next.js site. All the words live in `content.ts`; edit that file to change anything on the site.
+Personal portfolio for PM / APM roles. Next.js 15 (App Router) + TypeScript, plain CSS, React Three Fiber for the
+companion probe, GSAP + Lenis for the parallax hero, Gemini for the AI guide.
 
-## Before you publish: check these
-
-The case-study pages are drafts I rebuilt from the one-line bullets on your old site. Where a bullet only gave a result, I wrote plausible context around it. **Read every case study and rewrite anything that isn't exactly true.** An interviewer will ask about each sentence.
-
-Specifically:
-
-1. **Case-study context I filled in.** Check the "Context", "Finding the drop-off", "What the interviews changed" and "Why I pivoted" sections. The reasoning there is my draft, not your words.
-2. **LinkedIn.** Paste your URL into `profile.linkedin`. The link stays hidden until you do.
-3. **Channel links.** Confirm `instagram.com/whyitsbuilt` and `youtube.com/@whyitsbuilt` are the right addresses.
-4. **Dates.** Your HPCL start month; when InstaPrepsAI ended; whether Nexorea is still running.
-5. **Nexorea numbers.** "85% onboarding completion" and "retention up 25%": make sure you can say what each was measured against.
-6. **Photo.** `public/saswat.jpg` was cropped from a screenshot of your old site. Replace it with the original photo for a sharper image.
-
-What I deliberately left out from the old site: the phone number, the skill tag clouds, the fraud-detection project, the "72% unit cost reduction" and "accelerated iteration by 67%" claims, and the mechanical "Core" section. Add any back only if you can defend it in an interview.
-
-## Run it on your Mac
+## Run it
 
 ```bash
 npm install
-npm run dev
+cp .env.example .env.local   # optional: add GEMINI_API_KEY for typed questions
+npm run dev                  # http://localhost:3000
+npm run check:content        # lists every placeholder and unverified claim
+npm run build
 ```
 
-Then open http://localhost:3000.
+## Where things live
 
-## Put it on GitHub and Vercel (about 10 minutes)
+| Path | What it is |
+| --- | --- |
+| `content/` | **All site text.** Profile, case studies, experience, curated AI answers. Edit here only. |
+| `content/types.ts` | The content model, including the `status` on every claim. |
+| `public/artifacts/<slug>/` | Drop screenshots, dashboards, PRD images here (see README in each folder). |
+| `public/resume.pdf` | **Placeholder** — replace with the real resume. |
+| `public/space/` | Parallax layers (generated, original art). |
+| `app/` | Routes: `/`, `/work`, `/work/[slug]`, `/experience`, `/about`, `/contact`, `/api/ask`, sitemap, robots, 404. |
+| `components/scene/` | The 3D probe, its SVG fallback, and the lazy loader. |
+| `components/ui/parallax-scrolling.tsx` | Parallax hero (adapted from Osmo's component). |
+| `components/assistant/` | The AI guide panel. |
+| `lib/ai/` | Knowledge builder, prompt, Gemini client, rate limits. |
 
-1. On github.com (signed in as **dashsaswat09**), create a new repository called `portfolio-2026`. Leave it empty: no README, no .gitignore.
-2. In Terminal, inside this folder:
-   ```bash
-   git init
-   git add .
-   git commit -m "New portfolio"
-   git branch -M main
-   git remote add origin https://github.com/dashsaswat09/portfolio-2026.git
-   git push -u origin main
-   ```
-3. Go to vercel.com and **sign in with GitHub** using that same account. Click **Add New → Project**, pick `portfolio-2026`, and click **Deploy**. No settings to change.
-4. Optional: in the Vercel project, open **Settings → Domains** and add a domain you've bought, such as saswatdash.com.
+## Content status — read this before publishing
 
-Every push to `main` now redeploys the site automatically. Write down which accounts you used this time.
+Every claim has a `status`:
+
+- `verified` — you've confirmed it. Shows everywhere.
+- `review` — from your resume or old site. Shows everywhere; preview builds mark it with a blue rail. Confirm baselines and dates.
+- `placeholder` — a best-case **scenario** showing what belongs there. It is not true. Preview builds show it with an amber
+  "Placeholder — replace" badge. **Production hides it automatically**, and the AI guide never sees it.
+
+Workflow: replace the text, set `status: "verified"`, run `npm run check:content` until it reports 0 placeholders.
+
+## AI guide
+
+- Suggested questions → pre-written answers in `content/assistant.ts` (no API call).
+- Typed questions → `POST /api/ask` → Gemini, given only non-placeholder content, must return `{answer, supported, links}`.
+  Links are filtered to real pages. No conversations are stored.
+- No `GEMINI_API_KEY` or provider error → honest fallback message. The rest of the site never depends on it.
+- Limits (per instance): 6/min and 30/day per visitor, 300/day total. Gemini's own free-tier quota is the real ceiling.
+- Free tier: Google may use free-tier inputs to improve its products. The panel tells visitors this.
+
+## Deploy (Vercel project `portfolio2026`)
+
+1. Vercel → Settings → Environment Variables: add `GEMINI_API_KEY` (and optionally `GEMINI_MODEL`).
+2. Push a branch → preview deployment (shows placeholders, blocked from search engines).
+3. Merge to `main` → production at saswatdash.in (placeholders hidden).
+
+## Performance notes
+
+- Hero text is server-rendered HTML; the 3D probe loads after idle, only on screens ≥ 760px with WebGL, and pauses off-screen.
+- Mobile and no-WebGL visitors get the SVG probe. Reduced-motion turns off parallax, smooth scroll and probe animation.
