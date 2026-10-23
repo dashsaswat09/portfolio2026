@@ -43,7 +43,7 @@ export function Scheduler({ tabIndex, onBooked }: { tabIndex: number; onBooked: 
       try {
         const res = await fetch(`/api/schedule/slots?type=${encodeURIComponent(t)}&tz=${encodeURIComponent(tz)}`);
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Couldn't load the calendar.");
+        if (!res.ok) throw new Error([data.error || "Couldn't load the calendar.", data.detail && `(Setup detail: ${data.detail})`].filter(Boolean).join(" "));
         if (data.configured === false) {
           setError("Booking isn't switched on yet.");
           setSlots({});

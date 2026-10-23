@@ -54,7 +54,14 @@ export async function getSlots(opts: { slug: string; start: string; end: string;
     format: "range",
   });
   const res = await calFetch(`/slots?${q}`, { method: "GET", version: SLOTS_VERSION });
-  if (!res.ok) throw new ScheduleError(`Cal.com slots returned ${res.status}`, "upstream");
+  if (!res.ok) {
+    const text = (await res.text()).replace(/\s+/g, " ").slice(0, 300);
+    const hint =
+      res.status === 404 || /not found|event type/i.test(text)
+        ? ` — check that cal.com/${user}/${opts.slug} exists and is not hidden`
+        : "";
+    throw new ScheduleError(`Cal.com slots returned ${res.status}: ${text}${hint}`, "upstream");
+  }
   const body = (await res.json()) as { data?: Record<string, { start: string; end?: string }[]> };
   const out: SlotsByDay = {};
   for (const [day, list] of Object.entries(body.data ?? {})) {

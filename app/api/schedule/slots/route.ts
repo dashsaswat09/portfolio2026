@@ -33,6 +33,8 @@ export async function GET(req: Request) {
   } catch (err) {
     console.error("[schedule/slots]", err);
     const msg = err instanceof ScheduleError && err.kind === "timeout" ? "The calendar took too long to respond." : "Couldn't load the calendar.";
-    return NextResponse.json({ error: msg }, { status: 502 });
+    // On previews, include Cal.com's own message so setup problems are easy to fix.
+    const detail = process.env.VERCEL_ENV !== "production" && err instanceof Error ? err.message : undefined;
+    return NextResponse.json({ error: msg, detail }, { status: 502 });
   }
 }
