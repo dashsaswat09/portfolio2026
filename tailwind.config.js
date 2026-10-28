@@ -44,6 +44,10 @@ export default {
   				DEFAULT: 'hsl(var(--brand) / <alpha-value>)',
   				2: 'hsl(var(--brand-2) / <alpha-value>)'
   			},
+  			spark: {
+  				DEFAULT: 'hsl(var(--spark) / <alpha-value>)',
+  				ink: 'hsl(var(--spark-ink) / <alpha-value>)'
+  			},
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring) / <alpha-value>)',

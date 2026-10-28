@@ -61,10 +61,11 @@ const Hero: React.FC = () => {
         </div>
 
         <dl key={lens.id} className="lens-fade mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {lens.highlights.map((h) => (
-            <div key={h.label} className="card p-5">
+          {/* Only the lead stat gets the lime spark, so one number is the one people remember. */}
+          {lens.highlights.map((h, i) => (
+            <div key={h.label} className={`card p-5 ${i === 0 ? 'border-spark-ink/40' : ''}`}>
               <dt className="sr-only">{h.label}</dt>
-              <dd className="text-3xl font-semibold tracking-tight text-foreground">{h.stat}</dd>
+              <dd className={`text-3xl font-semibold tracking-tight ${i === 0 ? 'text-spark-ink' : 'text-foreground'}`}>{h.stat}</dd>
               <dd className="mt-1 text-sm text-muted-foreground">{h.label}</dd>
             </div>
           ))}

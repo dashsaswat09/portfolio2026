@@ -14,18 +14,21 @@ export const useLens = () => {
   return context;
 };
 
+// Product is the view most visitors are here for, so it opens by default (one fewer choice up front).
+const DEFAULT_LENS: LensId = 'product';
+
 const readFromUrl = (): LensId => {
   const id = new URLSearchParams(window.location.search).get('for');
-  return lenses.some((l) => l.id === id) ? (id as LensId) : 'all';
+  return lenses.some((l) => l.id === id) ? (id as LensId) : DEFAULT_LENS;
 };
 
-// The selected lens lives in the URL (?for=product) so a tailored view can be shared with a recruiter.
+// The selected lens lives in the URL (?for=analytics) so a tailored view can be shared with a recruiter.
 export const LensProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [id, setId] = useState<LensId>(readFromUrl);
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    if (id === 'all') url.searchParams.delete('for');
+    if (id === DEFAULT_LENS) url.searchParams.delete('for');
     else url.searchParams.set('for', id);
     window.history.replaceState(null, '', url);
   }, [id]);

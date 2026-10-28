@@ -194,6 +194,70 @@ export const roles: Role[] = [
 
 export const work: Work[] = [
   {
+    id: 'artisanal',
+    title: 'AirtCraft — B2B art marketplace',
+    context: 'Startup · Co-founder · grew out of my B.Tech thesis at IIT Kharagpur',
+    period: '2024 – 2026',
+    domains: ['product'],
+    featured: true,
+    summary:
+      'Connected corporates and interior designers with verified Indian artists. Thesis research led us to pivot from a broad consumer marketplace to B2B, and we launched a quote-based platform. It is now on hold.',
+    impact: [
+      { stat: '481', label: 'artists & buyers surveyed' },
+      { stat: '3', label: 'stakeholder groups interviewed before the pivot' },
+      { stat: '4', label: 'user dashboards built and launched' },
+    ],
+    proof: [{ label: 'Read the report', kind: 'pdf', url: '/proof/airtcraft-project-report.pdf' }],
+  },
+  {
+    id: 'vendor-analytics',
+    title: 'Vendor performance & profitability',
+    context: 'Analytics project',
+    period: 'Jul – Aug 2025',
+    domains: ['analytics', 'operations'],
+    featured: true,
+    summary:
+      'Which vendors actually make money, and where is capital stuck on shelves? Statistical analysis of 10k+ sales and inventory records.',
+    impact: [
+      { stat: '$2.71M', label: 'slow-moving inventory exposed' },
+      { stat: '65.7%', label: 'over-reliance on top vendors found' },
+      { stat: '72%', label: 'unit-cost cut via bulk-purchase regression' },
+    ],
+    proof: [{ label: 'View analysis', kind: 'code' }],
+  },
+  {
+    id: 'atliq',
+    title: 'AtliQ Hotels revenue optimisation',
+    context: 'Analytics project',
+    period: 'Jun – Jul 2025',
+    domains: ['analytics'],
+    featured: true,
+    summary:
+      'Occupancy and pricing strategy for a 25-property hotel portfolio, with a phased roadmap to 65% occupancy.',
+    impact: [
+      { stat: '46,134', label: 'room-night upside identified' },
+      { stat: '22.2 pts', label: 'weekend vs weekday gap' },
+      { stat: '+7.3 pts', label: 'Standard occupancy from a 15% discount' },
+    ],
+    proof: [{ label: 'View dashboard', kind: 'pdf' }],
+  },
+  {
+    id: 'warm-forming',
+    title: 'Warm forming of magnesium alloys',
+    context: 'M.Tech project · IIT Kharagpur',
+    period: 'Aug 2025 – 2026',
+    domains: ['engineering'],
+    featured: true,
+    summary:
+      'Process development for Single Point Incremental Forming of magnesium sheet at elevated temperature.',
+    impact: [
+      { stat: '+55%', label: 'formability vs room temperature' },
+      { stat: '0.4 mm', label: 'wall thickness achieved' },
+      { stat: '25%', label: 'finer grains at warm forming' },
+    ],
+    proof: [{ label: 'Read the thesis', kind: 'pdf' }],
+  },
+  {
     id: 'instaprepsai-teardown',
     title: 'InstaPrepsAI onboarding teardown',
     context: 'Product teardown',
@@ -213,21 +277,6 @@ export const work: Work[] = [
         url: 'https://drive.google.com/file/d/1PglgbVnXtXXJofJhgjLO8sOMpYDagbwQ/view?usp=sharing',
       },
     ],
-  },
-  {
-    id: 'bookverse',
-    title: 'BookVerse — social reading app',
-    context: 'Product case study · MVP on Lovable + Supabase',
-    period: 'Sep 2025',
-    domains: ['product'],
-    featured: true,
-    summary:
-      'Readers’ notes stay trapped in Kindle while book talk happens on BookTok and Discord. Took a social reading app from problem and hypothesis through RICE and MoSCoW prioritisation to a working MVP and a validation plan.',
-    impact: [
-      { stat: '90+', label: 'sources analysed in research' },
-      { stat: '5', label: 'competing platforms benchmarked' },
-    ],
-    proof: [{ label: 'Read the case study', kind: 'pdf', url: '/proof/bookverse-case-study.pdf' }],
   },
   {
     id: 'smartchef',
@@ -267,12 +316,22 @@ export const work: Work[] = [
     ],
   },
   {
+    id: 'zomato',
+    title: 'Zomato review engagement',
+    context: 'NextLeap PM Fellowship · Top Fellow',
+    period: 'Jun – Jul 2024',
+    domains: ['product'],
+    summary:
+      'Ratings without substance weaken trust. Designed UI changes and a measurement framework to get more detailed reviews.',
+    impact: [{ stat: '+24%', label: 'projected detailed reviews' }],
+    proof: [{ label: 'Read the case study', kind: 'pdf' }],
+  },
+  {
     id: 'teliport',
     title: 'Tata Elxsi TELIPORT — navigation concept',
     context: 'National competition · Campus Winner',
     period: 'Sep – Oct 2023',
-    domains: ['engineering', 'product'],
-    featured: true,
+    domains: ['engineering'],
     summary:
       'Navigation degrades in dense cities where GPS signals bounce. Proposed algorithm changes to reduce multipath interference and a tool suite to detect signal errors.',
     impact: [
@@ -286,81 +345,6 @@ export const work: Work[] = [
         url: 'https://docs.google.com/presentation/d/1eRT-9emmatmp7XKHnSbpCxF58C1QCHfE/view',
       },
     ],
-  },
-  {
-    id: 'vendor-analytics',
-    title: 'Vendor performance & profitability',
-    context: 'Analytics project',
-    period: 'Jul – Aug 2025',
-    domains: ['analytics', 'operations'],
-    featured: true,
-    summary:
-      'Which vendors actually make money, and where is capital stuck on shelves? Statistical analysis of 10k+ sales and inventory records.',
-    impact: [
-      { stat: '$2.71M', label: 'slow-moving inventory exposed' },
-      { stat: '65.7%', label: 'over-reliance on top vendors found' },
-      { stat: '72%', label: 'unit-cost cut via bulk-purchase regression' },
-    ],
-    proof: [{ label: 'View analysis', kind: 'code' }],
-  },
-  {
-    id: 'atliq',
-    title: 'AtliQ Hotels revenue optimisation',
-    context: 'Analytics project',
-    period: 'Jun – Jul 2025',
-    domains: ['analytics'],
-    featured: true,
-    summary:
-      'Occupancy and pricing strategy for a 25-property hotel portfolio, with a phased roadmap to 65% occupancy.',
-    impact: [
-      { stat: '46,134', label: 'room-night upside identified' },
-      { stat: '22.2 pts', label: 'weekend vs weekday gap' },
-      { stat: '+7.3 pts', label: 'Standard occupancy from a 15% discount' },
-    ],
-    proof: [{ label: 'View dashboard', kind: 'pdf' }],
-  },
-  {
-    id: 'artisanal',
-    title: 'AirtCraft — B2B art marketplace',
-    context: 'Startup · Co-founder · grew out of my B.Tech thesis at IIT Kharagpur',
-    period: '2024 – 2026',
-    domains: ['product'],
-    featured: true,
-    summary:
-      'Connected corporates and interior designers with verified Indian artists. Thesis research led us to pivot from a broad consumer marketplace to B2B, and we launched a quote-based platform. It is now on hold.',
-    impact: [
-      { stat: '481', label: 'artists & buyers surveyed' },
-      { stat: '3', label: 'stakeholder groups interviewed before the pivot' },
-      { stat: '4', label: 'user dashboards built and launched' },
-    ],
-    proof: [{ label: 'Read the report', kind: 'pdf', url: '/proof/airtcraft-project-report.pdf' }],
-  },
-  {
-    id: 'warm-forming',
-    title: 'Warm forming of magnesium alloys',
-    context: 'M.Tech project · IIT Kharagpur',
-    period: 'Aug 2025 – 2026',
-    domains: ['engineering'],
-    featured: true,
-    summary:
-      'Process development for Single Point Incremental Forming of magnesium sheet at elevated temperature.',
-    impact: [
-      { stat: '+55%', label: 'formability vs room temperature' },
-      { stat: '0.4 mm', label: 'wall thickness achieved' },
-      { stat: '25%', label: 'finer grains at warm forming' },
-    ],
-    proof: [{ label: 'Read the thesis', kind: 'pdf' }],
-  },
-  {
-    id: 'zomato',
-    title: 'Zomato review engagement',
-    context: 'NextLeap PM Fellowship · Top Fellow',
-    period: 'Jun – Jul 2024',
-    domains: ['product'],
-    summary:
-      'Ratings without substance weaken trust. Designed UI changes and a measurement framework to get more detailed reviews.',
-    impact: [{ stat: '+24%', label: 'projected detailed reviews' }],
-    proof: [{ label: 'Read the case study', kind: 'pdf' }],
   },
   {
     id: 'amex',
@@ -405,6 +389,21 @@ export const work: Work[] = [
       { stat: '81.1%', label: 'accuracy' },
     ],
     proof: [{ label: 'View code', kind: 'code' }],
+  },
+  {
+    id: 'bookverse',
+    title: 'BookVerse — social reading app',
+    context: 'Product case study · MVP on Lovable + Supabase',
+    period: 'Sep 2025',
+    domains: ['product'],
+    featured: true,
+    summary:
+      'Readers’ notes stay trapped in Kindle while book talk happens on BookTok and Discord. Took a social reading app from problem and hypothesis through RICE and MoSCoW prioritisation to a working MVP and a validation plan.',
+    impact: [
+      { stat: '90+', label: 'sources analysed in research' },
+      { stat: '5', label: 'competing platforms benchmarked' },
+    ],
+    proof: [{ label: 'Read the case study', kind: 'pdf', url: '/proof/bookverse-case-study.pdf' }],
   },
 ];
 
@@ -532,10 +531,16 @@ export type Lens = {
 
 export const lenses: Lens[] = [
   {
-    id: 'all',
-    label: 'Everything',
-    pitch: profile.headline,
-    highlights,
+    id: 'product',
+    label: 'Product',
+    pitch: 'Product manager who ships fast and proves impact with data — 3 PM internships and a co-founded AI startup.',
+    resumeUrl: '/Saswat_Dash_Resume_Product_Manager.pdf',
+    highlights: [
+      { stat: '9 days', label: 'idea to launched platform at InstaPrepsAI' },
+      { stat: '57%', label: 'MAU growth at InstaPrepsAI' },
+      { stat: '48', label: 'user interviews for Nexorea' },
+      { stat: 'Top', label: 'PM Fellow — NextLeap (Zomato case)' },
+    ],
   },
   {
     id: 'operations',
@@ -547,18 +552,6 @@ export const lenses: Lens[] = [
       { stat: '$2.71M', label: 'slow-moving inventory exposed in vendor analysis' },
       { stat: '65.7%', label: 'vendor concentration risk identified' },
       { stat: 'GATE', label: 'Qualified 2024 · Mechanical' },
-    ],
-  },
-  {
-    id: 'product',
-    label: 'Product',
-    pitch: 'Product manager who ships fast and proves impact with data — 3 PM internships and a co-founded AI startup.',
-    resumeUrl: '/Saswat_Dash_Resume_Product_Manager.pdf',
-    highlights: [
-      { stat: '9 days', label: 'idea to launched platform at InstaPrepsAI' },
-      { stat: '57%', label: 'MAU growth at InstaPrepsAI' },
-      { stat: '48', label: 'user interviews for Nexorea' },
-      { stat: 'Top', label: 'PM Fellow — NextLeap (Zomato case)' },
     ],
   },
   {
@@ -584,6 +577,12 @@ export const lenses: Lens[] = [
       { stat: '−12%', label: 'motion-unit weight at Podhikal Scientific' },
       { stat: 'GATE', label: 'Qualified 2024 · Mechanical' },
     ],
+  },
+  {
+    id: 'all',
+    label: 'Everything',
+    pitch: profile.headline,
+    highlights,
   },
 ];
 

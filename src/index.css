@@ -22,9 +22,13 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 221 83% 48%;
-    --brand: 221 83% 48%;
-    --brand-2: 173 80% 32%;
+    /* Black + cobalt + acid lime. Lime is the spark: used sparingly, on what moves or matters most. */
+    --ring: 84 79% 27%;
+    --brand: 224 76% 48%;
+    --brand-2: 84 79% 27%;
+    --brand-solid: 224 76% 48%;
+    --spark: 74 100% 50%;
+    --spark-ink: 84 79% 27%;
     --radius: 0.75rem;
   }
   .dark {
@@ -46,9 +50,12 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 17%;
     --input: 240 3.7% 15.9%;
-    --ring: 213 94% 68%;
-    --brand: 213 94% 68%;
-    --brand-2: 168 76% 52%;
+    --ring: 74 100% 50%;
+    --brand: 223 92% 68%;
+    --brand-2: 74 100% 50%;
+    --brand-solid: 224 76% 48%;
+    --spark: 74 100% 50%;
+    --spark-ink: 74 100% 50%;
   }
 
   * {
@@ -82,7 +89,7 @@
     pointer-events: none;
     background:
       radial-gradient(60rem 30rem at 15% -10%, hsl(var(--brand) / 0.14), transparent 60%),
-      radial-gradient(50rem 28rem at 95% 0%, hsl(var(--brand-2) / 0.12), transparent 60%);
+      radial-gradient(50rem 28rem at 95% 0%, hsl(var(--spark) / 0.07), transparent 60%);
   }
 
   /* Aurora (WebGL) behind the hero. In light mode the dark shader is inverted so it reads as a
@@ -145,7 +152,7 @@
 
   .btn-primary {
     @apply inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-opacity hover:opacity-90;
-    background-image: linear-gradient(90deg, hsl(221 83% 48%), hsl(173 80% 32%));
+    background-color: hsl(var(--brand-solid));
   }
   .btn-ghost {
     @apply inline-flex items-center gap-2 rounded-lg border border-border bg-background/60 px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted;
@@ -203,7 +210,7 @@
   }
 
   .proof-link {
-    @apply inline-flex items-center gap-1.5 rounded-lg bg-brand/10 px-3 py-1.5 text-sm font-medium text-brand transition-colors hover:bg-brand/20;
+    @apply inline-flex items-center gap-1.5 rounded-lg bg-brand/10 px-3 py-1.5 text-sm font-medium text-brand transition-colors hover:bg-brand/20 hover:underline decoration-spark-ink decoration-2 underline-offset-4;
   }
   .pending-chip {
     @apply inline-flex items-center gap-1.5 rounded-lg border border-dashed border-amber-500/60 px-3 py-1.5 text-xs font-medium text-amber-700 dark:text-amber-400;

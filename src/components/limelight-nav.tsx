@@ -29,6 +29,8 @@ type LimelightNavProps = {
   limelightClassName?: string;
   iconContainerClassName?: string;
   iconClassName?: string;
+  /** Show text labels under the icons from the xl breakpoint (icons only below it). */
+  showLabels?: boolean;
 };
 
 /**
@@ -43,6 +45,7 @@ export const LimelightNav = ({
   limelightClassName,
   iconContainerClassName,
   iconClassName,
+  showLabels = false,
 }: LimelightNavProps) => {
   const [internalActiveIndex, setInternalActiveIndex] = useState(defaultActiveIndex);
   const activeIndex = controlledActiveIndex !== undefined ? controlledActiveIndex : internalActiveIndex;
@@ -87,15 +90,24 @@ export const LimelightNav = ({
             title={label}
             aria-current={activeIndex === index ? 'true' : undefined}
             ref={el => (navItemRefs.current[index] = el)}
-            className={`relative z-20 flex h-full cursor-pointer items-center justify-center p-5  ${iconContainerClassName}`}
+            className={`relative z-20 flex h-full cursor-pointer flex-col items-center justify-center gap-1 ${showLabels ? 'p-5 xl:px-3.5 xl:py-0' : 'p-5'} ${iconContainerClassName}`}
             onClick={() => handleItemClick(index, onClick)}
             aria-label={label}
           >
             {cloneElement(icon, {
-              className: `w-6 h-6 transition-opacity duration-100 ease-in-out ${
+              className: `${showLabels ? 'w-6 h-6 xl:w-5 xl:h-5' : 'w-6 h-6'} transition-opacity duration-100 ease-in-out ${
                 activeIndex === index ? 'opacity-100' : 'opacity-40'
               } ${icon.props.className || ''} ${iconClassName || ''}`,
             })}
+            {showLabels && label && (
+              <span
+                className={`hidden xl:block whitespace-nowrap text-[11px] font-medium leading-none transition-opacity ${
+                  activeIndex === index ? 'opacity-100' : 'opacity-60'
+                }`}
+              >
+                {label}
+              </span>
+            )}
           </a>
       ))}
 
@@ -106,7 +118,7 @@ export const LimelightNav = ({
         } ${limelightClassName}`}
         style={{ left: '-999px' }}
       >
-        <div className="absolute left-[-30%] top-[5px] w-[160%] h-14 [clip-path:polygon(5%_100%,25%_0,75%_0,95%_100%)] bg-gradient-to-b from-yellow-100 to-orange-200 dark:from-primary/30 to-transparent pointer-events-none" />
+        <div className="absolute left-[-30%] top-[5px] w-[160%] h-14 [clip-path:polygon(5%_100%,25%_0,75%_0,95%_100%)] bg-gradient-to-b from-spark/25 to-transparent pointer-events-none" />
       </div>
     </nav>
   );

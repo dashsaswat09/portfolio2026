@@ -21,12 +21,10 @@ const LensSelector: React.FC = () => {
     <div className="lens-panel">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p id="lens-label" className="text-sm font-medium text-foreground">I’m hiring for…</p>
-        {lens.id !== 'all' && (
-          <button onClick={copyLink} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
-            {copied ? <Check size={12} /> : <Link2 size={12} />}
-            {copied ? 'Link copied' : 'Copy link to this view'}
-          </button>
-        )}
+        <button onClick={copyLink} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+          {copied ? <Check size={12} /> : <Link2 size={12} />}
+          {copied ? 'Link copied' : 'Copy link to this view'}
+        </button>
       </div>
       <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-labelledby="lens-label">
         {lenses.map((l) => (

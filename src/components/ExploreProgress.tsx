@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, ArrowRight } from 'lucide-react';
+import { X, ArrowRight, Download } from 'lucide-react';
+import { profile } from '../content';
+import { useLens } from '../contexts/LensContext';
 
 // A small ring in the nav that tracks which section the visitor is on, filling and emptying as they
-// scroll. Once every section has been seen, a one-time prompt nudges them to get in touch.
+// scroll. Once every section has been seen, a one-time prompt offers the résumé for the current view.
 const ExploreProgress: React.FC<{ ids: string[] }> = ({ ids }) => {
   const [seen, setSeen] = useState<Set<string>>(new Set());
   const [current, setCurrent] = useState(0);
   const [dismissed, setDismissed] = useState(false);
+  const { lens } = useLens();
+  const resumeUrl = lens.resumeUrl || profile.resumeUrl;
 
   // A section counts as seen once it covers the middle band of the viewport. Checked on scroll
   // (one rAF per frame) rather than with IntersectionObserver, which misses sections on fast jumps.
@@ -70,7 +74,7 @@ const ExploreProgress: React.FC<{ ids: string[] }> = ({ ids }) => {
             cx="12"
             cy="12"
             r={r}
-            className="fill-none stroke-brand transition-[stroke-dashoffset] duration-500"
+            className="fill-none stroke-spark-ink transition-[stroke-dashoffset] duration-500"
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeDasharray={circ}
@@ -85,10 +89,15 @@ const ExploreProgress: React.FC<{ ids: string[] }> = ({ ids }) => {
       {complete && !dismissed && createPortal(
         <div className="explore-toast" role="status">
           <p className="text-sm text-foreground">
-            <strong>You’ve seen it all.</strong> Thanks for exploring — let’s talk.
+            <strong>You’ve seen it all.</strong> Take the résumé for this view, or let’s talk.
           </p>
-          <div className="mt-3 flex items-center gap-2">
-            <a href="#contact" className="btn-primary !py-1.5 !px-3" onClick={() => setDismissed(true)}>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {resumeUrl && (
+              <a href={resumeUrl} download className="btn-primary !py-1.5 !px-3" onClick={() => setDismissed(true)}>
+                <Download size={14} /> {lens.id === 'all' ? 'Résumé' : `${lens.label} résumé`}
+              </a>
+            )}
+            <a href="#contact" className="btn-ghost !py-1.5 !px-3" onClick={() => setDismissed(true)}>
               Get in touch <ArrowRight size={14} />
             </a>
             <button onClick={() => setDismissed(true)} className="p-1.5 text-muted-foreground hover:text-foreground" aria-label="Dismiss">

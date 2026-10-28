@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Download } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import { LimelightNav } from './limelight-nav';
 import ExploreProgress from './ExploreProgress';
 import { profile } from '../content';
+import { useLens } from '../contexts/LensContext';
 
 export interface NavItem {
   id: string;
@@ -14,6 +15,8 @@ export interface NavItem {
 const Nav: React.FC<{ items: NavItem[] }> = ({ items }) => {
   const [active, setActive] = useState(items[0]?.id ?? '');
   const [open, setOpen] = useState(false);
+  const { lens } = useLens();
+  const resumeUrl = lens.resumeUrl || profile.resumeUrl;
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Highlight the section currently in the middle of the viewport.
@@ -67,11 +70,18 @@ const Nav: React.FC<{ items: NavItem[] }> = ({ items }) => {
               activeIndex={activeIndex}
               onTabChange={(index) => setActive(items[index].id)}
               className="bg-card/50 backdrop-blur-md border-border"
-              limelightClassName="bg-gradient-to-r from-yellow-400 to-orange-500 dark:from-blue-600 dark:to-teal-600"
+              limelightClassName="bg-spark-ink dark:bg-spark"
+              showLabels
             />
           </div>
 
           <div className="flex items-center gap-2">
+            {/* The résumé is what recruiters come for, so it stays one click away while scrolling. */}
+            {resumeUrl && (
+              <a href={resumeUrl} download className="btn-primary hidden sm:inline-flex !px-3.5 !py-2">
+                <Download size={15} /> Résumé
+              </a>
+            )}
             <ExploreProgress ids={sectionIds} />
             <ThemeToggle />
             <button
