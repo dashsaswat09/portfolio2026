@@ -1,0 +1,234 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 42%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 221 83% 48%;
+    --brand: 221 83% 48%;
+    --brand-2: 173 80% 32%;
+    --radius: 0.75rem;
+  }
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 8% 7%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 66%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 17%;
+    --input: 240 3.7% 15.9%;
+    --ring: 213 94% 68%;
+    --brand: 213 94% 68%;
+    --brand-2: 168 76% 52%;
+  }
+
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  h1, h2, h3 {
+    font-family: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+}
+
+@layer components {
+  /* Soft brand glow behind the hero; replaces the old full-screen WebGL shader. */
+  .page-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(60rem 30rem at 15% -10%, hsl(var(--brand) / 0.14), transparent 60%),
+      radial-gradient(50rem 28rem at 95% 0%, hsl(var(--brand-2) / 0.12), transparent 60%);
+  }
+
+  /* Aurora (WebGL) behind the hero. In light mode the dark shader is inverted so it reads as a
+     pale aurora instead of a black block behind dark text. */
+  .aurora-layer {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .aurora-canvas {
+    display: block;
+    position: absolute;
+    inset: 0;
+    filter: invert(1) hue-rotate(180deg) saturate(1.2);
+    opacity: 0.85;
+  }
+  .dark .aurora-canvas {
+    filter: none;
+    opacity: 1;
+  }
+
+  /* Shooting stars (from the original site) */
+  .shooting-star {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: radial-gradient(circle, hsl(var(--brand)) 0%, hsl(var(--brand) / 0.6) 30%, transparent 100%);
+    box-shadow: 0 0 6px hsl(var(--brand) / 0.8), 0 0 12px hsl(var(--brand) / 0.5);
+    animation: shooting 3s ease-in-out infinite;
+  }
+  .dark .shooting-star {
+    background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 30%, rgba(255,255,255,0) 100%);
+    box-shadow: 0 0 6px rgba(255,255,255,1), 0 0 12px rgba(255,255,255,0.8), 0 0 18px rgba(255,255,255,0.6);
+  }
+
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-background focus:px-4 focus:py-2;
+  }
+
+  .eyebrow {
+    @apply text-sm font-semibold uppercase tracking-widest text-brand;
+  }
+
+  .gradient-text {
+    background-image: linear-gradient(90deg, hsl(var(--brand)), hsl(var(--brand-2)));
+    @apply bg-clip-text text-transparent;
+  }
+
+  .card {
+    @apply rounded-2xl border border-border bg-card/70 backdrop-blur-sm transition-colors;
+  }
+  .card-link {
+    @apply hover:border-brand/50;
+  }
+  .card-current {
+    @apply border-brand/40 shadow-[0_0_0_1px_hsl(var(--brand)/0.15),0_10px_40px_-12px_hsl(var(--brand)/0.35)];
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-opacity hover:opacity-90;
+    background-image: linear-gradient(90deg, hsl(221 83% 48%), hsl(173 80% 32%));
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 rounded-lg border border-border bg-background/60 px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted;
+  }
+
+  .status-pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-border bg-background/70 px-3 py-1 font-medium text-foreground;
+  }
+  .now-badge {
+    @apply inline-block rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400;
+  }
+
+  .nav-link {
+    @apply rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground;
+  }
+  .nav-link-active {
+    @apply text-foreground bg-muted;
+  }
+
+  .chip {
+    @apply rounded-full border border-border px-3.5 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground;
+  }
+  .chip-active {
+    @apply border-transparent bg-foreground text-background hover:text-background;
+  }
+
+  .tag {
+    @apply rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground;
+  }
+
+  .tag-active {
+    @apply bg-brand/15 text-brand;
+  }
+
+  .lens-panel {
+    @apply rounded-2xl border border-border bg-card/70 p-4 backdrop-blur-sm;
+  }
+  .lens-fade {
+    animation: lens-fade 0.35s ease-out;
+  }
+
+  .bid-card {
+    @apply rounded-xl border border-border bg-background/60 p-4 text-left transition-colors enabled:hover:border-brand/60 enabled:hover:bg-brand/5;
+  }
+  .bid-correct {
+    @apply border-emerald-500 bg-emerald-500/10;
+  }
+  .bid-wrong {
+    @apply border-red-500 bg-red-500/10;
+  }
+
+  .explore-toast {
+    @apply fixed bottom-4 right-4 z-50 max-w-xs rounded-2xl border border-border bg-background/95 p-4 shadow-xl backdrop-blur-md;
+    animation: lens-fade 0.4s ease-out;
+  }
+
+  .proof-link {
+    @apply inline-flex items-center gap-1.5 rounded-lg bg-brand/10 px-3 py-1.5 text-sm font-medium text-brand transition-colors hover:bg-brand/20;
+  }
+  .pending-chip {
+    @apply inline-flex items-center gap-1.5 rounded-lg border border-dashed border-amber-500/60 px-3 py-1.5 text-xs font-medium text-amber-700 dark:text-amber-400;
+  }
+
+  /* Theme toggle */
+  .theme-toggle {
+    @apply relative w-12 h-6 bg-gray-300 dark:bg-gray-700 rounded-full transition-colors duration-300 cursor-pointer;
+  }
+  .theme-toggle-thumb {
+    @apply absolute top-1 left-1 w-4 h-4 bg-white dark:bg-gray-300 rounded-full shadow-md transition-transform duration-300;
+  }
+  .theme-toggle-thumb.dark {
+    @apply translate-x-6;
+  }
+}
+
+@keyframes shooting {
+  0% { opacity: 0; transform: translate3d(0, 0, 0) scale(0.5); }
+  10% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  90% { opacity: 1; transform: translate3d(150px, 150px, 0) scale(1); }
+  100% { opacity: 0; transform: translate3d(200px, 200px, 0) scale(0.5); }
+}
+
+@keyframes lens-fade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
